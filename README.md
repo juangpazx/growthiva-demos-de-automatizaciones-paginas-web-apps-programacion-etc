@@ -1,2 +1,4 @@
-# proyectos-automatizados-con-IA-
-Automatizaciones simples realizadas con n8n 
+# Demos de Automatización con IA
+Proyectos creados por Juan usando APIs, IA y automatización.
+
+
