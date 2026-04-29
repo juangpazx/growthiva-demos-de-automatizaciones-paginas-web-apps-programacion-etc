@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Sesiones de WhatsApp
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Variables de entorno
+.env
+.env.local
+
+# QR temporal
+qr.png
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Archivos temporales
+tmp/
+temp/
