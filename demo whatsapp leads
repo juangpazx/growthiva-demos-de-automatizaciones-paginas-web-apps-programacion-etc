@@ -1,0 +1,16 @@
+# Demo: Captura de Leads desde WhatsApp
+
+Esta demo muestra cómo automatizar la recopilación de leads que llegan por WhatsApp y guardarlos automáticamente en Google Sheets.
+
+## ¿Qué hace esta automatización?
+
+1. Recibe un mensaje desde WhatsApp (por ejemplo: “Hola, quiero información”).
+2. Extrae el nombre, teléfono y mensaje del cliente.
+3. Guarda los datos en una hoja de Google Sheets.
+4. Opcional: envía una respuesta automática al cliente.
+
+## Tecnologías usadas
+- WhatsApp Cloud API
+- Google Sheets API
+- n8n / Node.js / Python (dependiendo de la implementación)
+

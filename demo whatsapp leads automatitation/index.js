@@ -1,6 +1,7 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcodeLib = require('qrcode');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
+const { JWT } = require('google-auth-library');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -28,11 +29,15 @@ async function saveToGoogleSheets(nombre, telefono, mensaje) {
             return;
         }
 
-        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-        await doc.useServiceAccountAuth({
-            client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        const serviceAccountAuth = new JWT({
+            email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            scopes: [
+                'https://www.googleapis.com/auth/spreadsheets',
+            ],
         });
+
+        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
 
         await doc.loadInfo(); 
         const sheet = doc.sheetsByIndex[0];
