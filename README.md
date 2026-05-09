@@ -12,7 +12,7 @@ Este repositorio contiene una demo de automatización para capturar leads desde 
 
 ## ¿Usa IA esta versión?
 
-En esta versión del proyecto no se está usando un servicio personalizado de IA. El bot responde con reglas y respuestas programadas en `demo whatsapp leads automatitation/index.js`. Es un asistente basado en patrones de texto, no en un modelo generativo conectado a datos privados de la empresa.
+En esta versión del proyecto no se está usando un servicio personalizado de IA. El bot responde con reglas y respuestas programadas en `demo whatsapp leads automatitation/index.js`. Es un asistente basado en patrones de texto, no en un modelo generativo conectado a datos privados de la empresa. En este ejemplo, se programo pensando como si fuera una clinica dental, por lo tanto, las respuestas que dara el bot seran a traves de palabras claves que usualmente recibe una clinica dental por un cliente.
 
 ## ¿Cómo se usa la IA con un servicio personalizado?
 
