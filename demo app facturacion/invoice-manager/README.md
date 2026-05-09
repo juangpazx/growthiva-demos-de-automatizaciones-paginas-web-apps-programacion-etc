@@ -1,66 +1,52 @@
-# 📄 Invoice Manager - Gestor de Facturas Local
+# 📄 Invoice Manager
 
-Aplicación web completa para gestionar facturas sin usar APIs externas. Todo funciona 100% localmente con OCR, Excel y almacenamiento de imágenes.
+Aplicación de facturación inteligente para capturar, almacenar y analizar facturas de forma local. Ideal para pruebas rápidas, automatización de gastos y demostraciones técnicas.
 
-## ✨ Características
+## 🚀 Qué hace
 
-- ✅ **OCR Local** - Procesa imágenes con Tesseract.js (sin APIs)
-- ✅ **Extracción Automática** - Detecta fecha, proveedor, monto, número de factura y categoría
-- ✅ **Excel Automático** - Guarda datos en Excel local (crea archivo si no existe)
-- ✅ **Almacenamiento Organizado** - Organiza imágenes por fecha (AAAA-MM-DD)
-- ✅ **Interfaz Moderna** - Frontend con Tailwind CSS
-- ✅ **Estadísticas en Tiempo Real** - Visualiza totales y categorías
-- ✅ **Descarga de Excel** - Acceso a datos desde el navegador
-- ✅ **Responsive** - Funciona en móvil y desktop
+- Captura facturas en `PDF`, `JPG` o `PNG`
+- Extrae datos clave con OCR local (Tesseract.js)
+- Guarda facturas en `public/uploads/` organizadas por fecha
+- Actualiza automáticamente un archivo Excel (`facturas.xlsx`)
+- Ofrece APIs para ver facturas, descargar Excel y obtener estadísticas
 
-## 🛠️ Tecnologías Utilizadas
+## 💡 Beneficios
 
-- **Backend**: Node.js + Express.js
-- **OCR**: Tesseract.js (local, sin APIs)
-- **Excel**: XLSX
-- **Almacenamiento**: Sistema de archivos local
-- **Frontend**: HTML5 + Tailwind CSS
-- **Carga de Archivos**: Multer
-- **Compresión de Imágenes**: Sharp
+- No depende de servicios externos
+- Funciona completamente local
+- Código estructurado para producción
+- Listo para publicar como repositorio público en GitHub
 
-## 📋 Requisitos Previos
+## ✅ Características principales
 
-- Node.js (v14 o superior)
-- npm o yarn
+- OCR local con `tesseract.js`
+- Validación y subida de archivos con `multer`
+- Guardado de datos en Excel con `xlsx`
+- Backend con `Express` y `CORS`
+- Frontend ligera y funcional
+
+## 📦 Requisitos
+
+- Node.js 14+
+- npm
 - Windows, macOS o Linux
 
-## 🚀 Instalación
-
-### 1. Clonar o descargar el proyecto
+## ⚙️ Instalación
 
 ```bash
 cd invoice-manager
-```
-
-### 2. Instalar dependencias
-
-```bash
 npm install
 ```
 
-El comando anterior instala todos los paquetes necesarios:
-- express
-- multer
-- xlsx
-- tesseract.js
-- sharp
-- cors
-- dotenv
+## 🔧 Configuración
 
-### 3. Configurar variables de entorno
-
-Copiar el archivo `.env.example` a `.env`:
+Copia el archivo de ejemplo:
 
 ```bash
-cp .env.example .env
+copy .env.example .env
 ```
 
-O manualmente, crear un archivo `.env` en la raíz con:
+Contenido recomendado de `.env`:
 
 ```env
 PORT=3000
@@ -70,154 +56,98 @@ EXCEL_FILE=public/facturas.xlsx
 OCR_LANGUAGE=spa
 ```
 
-## ▶️ Ejecutar la Aplicación
+## ▶️ Ejecutar
 
-### Modo Desarrollo (con Nodemon)
+Modo desarrollo:
 
 ```bash
 npm run dev
 ```
 
-### Modo Producción
+Modo producción:
 
 ```bash
 npm start
 ```
 
-La aplicación estará disponible en: **http://localhost:3000**
+Abre la aplicación en `http://localhost:3000`
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del proyecto
 
 ```
 invoice-manager/
 ├── backend/
 │   ├── config/
-│   │   └── config.js           # Configuración general
+│   │   └── config.js
 │   ├── controllers/
-│   │   └── invoiceController.js # Lógica de negocio
+│   │   └── invoiceController.js
 │   ├── middleware/
-│   │   └── upload.js           # Configuración de Multer
+│   │   └── upload.js
 │   ├── routes/
-│   │   └── invoices.js         # Rutas de API
+│   │   └── invoices.js
 │   ├── utils/
-│   │   ├── ocrProcessor.js     # Procesamiento OCR
-│   │   ├── excelHandler.js     # Manejo de Excel
-│   │   └── fileOrganizer.js    # Organización de archivos
-│   └── server.js               # Servidor principal
+│   │   ├── ocrProcessor.js
+│   │   ├── excelHandler.js
+│   │   └── fileOrganizer.js
+│   └── server.js
 ├── frontend/
-│   └── index.html              # Interfaz web
+│   └── index.html
 ├── public/
-│   ├── uploads/                # Imágenes de facturas (por fecha)
-│   └── facturas.xlsx           # Archivo Excel generado
+│   ├── uploads/
+│   └── facturas.xlsx
 ├── .gitignore
 ├── .env.example
 ├── package.json
 └── README.md
 ```
 
-## 🔌 Endpoints de API
+## 🔌 Endpoints disponibles
 
-### Subir Factura
-```
-POST /api/upload
-Content-Type: multipart/form-data
+### Subir factura
 
-Archivo: factura.pdf/jpg/png
-```
+`POST /api/upload`
 
-**Respuesta exitosa:**
-```json
-{
-  "success": true,
-  "message": "Factura procesada exitosamente",
-  "data": {
-    "fecha": "15/05/2024",
-    "proveedor": "Empresa XYZ",
-    "monto": "$1,234.56",
-    "numeroFactura": "INV-001",
-    "categoria": "Servicios",
-    "imagePath": "/public/uploads/2024-05-15/timestamp-random.pdf",
-    "fechaRegistro": "09/05/2024 14:30:45"
-  }
-}
-```
+- `multipart/form-data`
+- campo: `file`
 
-### Obtener todas las Facturas
-```
-GET /api/facturas
-```
+### Listar facturas
 
-**Respuesta:**
-```json
-{
-  "success": true,
-  "message": "5 facturas encontradas",
-  "data": [
-    {
-      "Fecha": "15/05/2024",
-      "Proveedor": "Empresa XYZ",
-      "Monto": "$1,234.56",
-      "Número de Factura": "INV-001",
-      "Categoría": "Servicios",
-      "Ruta de Imagen": "/public/uploads/2024-05-15/timestamp-random.pdf",
-      "Fecha de Registro": "09/05/2024 14:30:45"
-    }
-  ]
-}
-```
+`GET /api/facturas`
 
 ### Descargar Excel
-```
-GET /api/excel
-```
 
-Descarga el archivo `facturas.xlsx` actualizado.
+`GET /api/excel`
 
-### Obtener Estadísticas
-```
-GET /api/estadisticas
-```
+### Obtener estadísticas
 
-**Respuesta:**
-```json
-{
-  "success": true,
-  "data": {
-    "totalFacturas": 5,
-    "totalMonto": 5234.56,
-    "categorias": {
-      "Servicios": 3,
-      "Materiales": 2
-    },
-    "proveedores": {
-      "Empresa XYZ": 2,
-      "Empresa ABC": 3
-    }
-  }
-}
-```
+`GET /api/estadisticas`
 
-## 🎯 Flujo de Procesamiento
+## 📈 Flujo de procesamiento
 
-```
 1. Usuario sube archivo (PDF/JPG/PNG)
-   ↓
-2. Multer recibe y valida el archivo
-   ↓
-3. Archivo se guarda en: public/uploads/AAAA-MM-DD/nombre-único.ext
-   ↓
-4. Tesseract.js realiza OCR local
-   ↓
-5. Script extrae datos clave (fecha, proveedor, monto, etc.)
-   ↓
-6. Se detecta categoría automáticamente
-   ↓
-7. Se abre/crea archivo Excel
-   ↓
-8. Se agrega fila con datos de la factura
-   ↓
-9. Se guarda Excel
-   ↓
+2. Multer guarda la factura en `public/uploads/AAAA-MM-DD`
+3. Se ejecuta OCR local
+4. Se extraen fecha, proveedor, monto, número y categoría
+5. Se actualiza el archivo Excel
+6. Se devuelve la respuesta con los datos procesados
+
+## 🌍 Cómo publicar este proyecto
+
+1. Sube este repositorio a GitHub.
+2. Cambia la visibilidad a `Public`.
+3. Actualiza la descripción del repositorio con:
+   `Invoice Manager | OCR + Excel local sin APIs`
+4. Agrega `LICENSE`, `README.md` y `CONTRIBUTING.md`.
+
+## 🧑‍💼 Contacto
+
+- Juan Paz
+- info@juanpazx.com
+
+## 📝 Licencia
+
+MIT
+
 10. Frontend muestra resultados y actualiza tabla
 ```
 
