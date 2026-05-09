@@ -1,5 +1,5 @@
 # Demos de Automatización con IA
-Proyectos creados por Juan usando APIs, IA y automatización.
+Proyectos creados por Juan usando codigo, vs code, APIS, paginas web, etc.
 
 ## Descripción del proyecto
 
