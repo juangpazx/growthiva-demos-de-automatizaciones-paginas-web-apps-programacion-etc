@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Manager - Gestor de Facturas</title>
+    <!-- Tailwind CSS desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .loader {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navegación -->
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-file-invoice-dollar text-blue-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-900">Invoice Manager</h1>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <span id="invoiceCount">0</span> facturas procesadas
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Grid de 2 columnas -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Sección de Carga -->
+            <div class="bg-white rounded-lg shadow p-6 fade-in">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                    <i class="fas fa-cloud-upload-alt text-blue-600"></i>
+                    <span>Subir Factura</span>
+                </h2>
+
+                <!-- Área de Drag & Drop -->
+                <div id="dropZone" class="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition mb-4">
+                    <i class="fas fa-image text-blue-400 text-4xl mb-4"></i>
+                    <p class="text-gray-700 font-medium mb-2">Arrastra tu factura aquí</p>
+                    <p class="text-gray-500 text-sm">o haz clic para seleccionar</p>
+                    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+                </div>
+
+                <!-- Información de Formatos Permitidos -->
+                <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4 text-sm text-blue-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Formatos soportados: PDF, JPG, PNG (máximo 10MB)
+                </div>
+
+                <!-- Botón de Carga Manual -->
+                <button onclick="document.getElementById('fileInput').click()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition">
+                    <i class="fas fa-folder-open mr-2"></i> Seleccionar Archivo
+                </button>
+
+                <!-- Indicador de Carga -->
+                <div id="uploadStatus" class="mt-4 hidden">
+                    <div class="flex items-center space-x-3">
+                        <div class="loader"></div>
+                        <span class="text-gray-600">Procesando factura...</span>
+                    </div>
+                </div>
+
+                <!-- Resultado de Carga -->
+                <div id="uploadResult" class="mt-4 hidden p-4 rounded-lg"></div>
+            </div>
+
+            <!-- Sección de Estadísticas -->
+            <div class="bg-white rounded-lg shadow p-6 fade-in">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                    <i class="fas fa-chart-bar text-green-600"></i>
+                    <span>Estadísticas</span>
+                </h2>
+
+                <!-- Tarjetas de Estadísticas -->
+                <div class="space-y-4">
+                    <!-- Total de Facturas -->
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4">
+                        <p class="text-gray-600 text-sm font-medium">Total de Facturas</p>
+                        <p class="text-3xl font-bold text-blue-600 mt-2" id="totalFacturas">0</p>
+                    </div>
+
+                    <!-- Monto Total -->
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4">
+                        <p class="text-gray-600 text-sm font-medium">Monto Total</p>
+                        <p class="text-3xl font-bold text-green-600 mt-2" id="totalMonto">$0.00</p>
+                    </div>
+
+                    <!-- Categorías -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <p class="text-gray-600 text-sm font-medium mb-3">Por Categoría</p>
+                        <div id="categoriasList" class="space-y-2">
+                            <p class="text-gray-500 text-sm">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de Descargar Excel -->
+                <button onclick="descargarExcel()" class="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition">
+                    <i class="fas fa-download mr-2"></i> Descargar Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Sección de Facturas Procesadas -->
+        <div class="bg-white rounded-lg shadow p-6 mt-8 fade-in">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+                <i class="fas fa-list text-purple-600"></i>
+                <span>Facturas Procesadas</span>
+            </h2>
+
+            <!-- Tabla de Facturas -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 border-b">
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Fecha</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Proveedor</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Monto</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">N° Factura</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Categoría</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facturasTableBody">
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-2xl mb-2"></i>
+                                <p>No hay facturas cargadas aún</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Ver Imagen -->
+    <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Vista de Imagen</h3>
+                <button onclick="cerrarModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <img id="modalImage" src="" alt="Factura" class="w-full rounded mb-4">
+            <a id="modalImageLink" href="" target="_blank" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
+                <i class="fas fa-external-link-alt mr-2"></i> Abrir en nueva pestaña
+            </a>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        // ========== CONFIGURACIÓN ==========
+        const API_URL = 'http://localhost:3000/api';
+        
+        // ========== ELEMENTOS DEL DOM ==========
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const uploadResult = document.getElementById('uploadResult');
+        const facturasTableBody = document.getElementById('facturasTableBody');
+        const invoiceCount = document.getElementById('invoiceCount');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalImageLink = document.getElementById('modalImageLink');
+
+        // ========== EVENT LISTENERS ==========
+
+        // Drag & Drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                procesar_factura(files[0]);
+            }
+        });
+
+        // Click en drop zone
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Cambio de archivo
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                procesar_factura(e.target.files[0]);
+            }
+        });
+
+        // ========== FUNCIONES PRINCIPALES ==========
+
+        /**
+         * Procesa una factura subida
+         */
+        async function procesar_factura(file) {
+            try {
+                // Validar archivo
+                if (!validar_archivo(file)) {
+                    return;
+                }
+
+                // Mostrar estado de carga
+                uploadStatus.classList.remove('hidden');
+                uploadResult.classList.add('hidden');
+
+                // Crear FormData
+                const formData = new FormData();
+                formData.append('factura', file);
+
+                // Enviar a servidor
+                const response = await fetch(`${API_URL}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Ocultar estado de carga
+                uploadStatus.classList.add('hidden');
+
+                if (result.success) {
+                    // Mostrar resultado exitoso
+                    mostrar_resultado_exitoso(result.data);
+                    
+                    // Recargar facturas y estadísticas
+                    await cargar_facturas();
+                    await cargar_estadisticas();
+                } else {
+                    // Mostrar error
+                    mostrar_resultado_error(result.message);
+                }
+
+                // Limpiar input
+                fileInput.value = '';
+            } catch (error) {
+                uploadStatus.classList.add('hidden');
+                mostrar_resultado_error('Error al procesar la factura: ' + error.message);
+            }
+        }
+
+        /**
+         * Valida el archivo
+         */
+        function validar_archivo(file) {
+            const extensionesPermitidas = ['.pdf', '.jpg', '.jpeg', '.png'];
+            const extension = '.' + file.name.split('.').pop().toLowerCase();
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
+            if (!extensionesPermitidas.includes(extension)) {
+                mostrar_resultado_error('Formato de archivo no permitido. Use: PDF, JPG, PNG');
+                return false;
+            }
+
+            if (file.size > maxSize) {
+                mostrar_resultado_error('El archivo es demasiado grande (máximo 10MB)');
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * Muestra resultado exitoso
+         */
+        function mostrar_resultado_exitoso(data) {
+            uploadResult.classList.remove('hidden');
+            uploadResult.innerHTML = `
+                <div class="bg-green-50 border border-green-200 rounded p-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-600 text-xl mt-0.5"></i>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-green-900 mb-2">¡Factura procesada exitosamente!</h4>
+                            <div class="text-sm text-green-800 space-y-1">
+                                <p><strong>Fecha:</strong> ${data.fecha || 'N/A'}</p>
+                                <p><strong>Proveedor:</strong> ${data.proveedor || 'N/A'}</p>
+                                <p><strong>Monto:</strong> ${data.monto || 'N/A'}</p>
+                                <p><strong>N° Factura:</strong> ${data.numeroFactura || 'N/A'}</p>
+                                <p><strong>Categoría:</strong> ${data.categoria || 'Otros'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Muestra error
+         */
+        function mostrar_resultado_error(mensaje) {
+            uploadResult.classList.remove('hidden');
+            uploadResult.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded p-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-exclamation-circle text-red-600 text-xl mt-0.5"></i>
+                        <div>
+                            <h4 class="font-semibold text-red-900">Error</h4>
+                            <p class="text-sm text-red-800">${mensaje}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Carga todas las facturas
+         */
+        async function cargar_facturas() {
+            try {
+                const response = await fetch(`${API_URL}/facturas`);
+                const result = await response.json();
+
+                if (result.success && result.data.length > 0) {
+                    // Actualizar contador
+                    invoiceCount.textContent = result.data.length;
+
+                    // Llenar tabla
+                    facturasTableBody.innerHTML = result.data.map((factura, index) => `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3 text-sm text-gray-900">${factura['Fecha'] || 'N/A'}</td>
+                            <td class="px-4 py-3 text-sm text-gray-900">${factura['Proveedor'] || 'N/A'}</td>
+                            <td class="px-4 py-3 text-sm text-gray-900">${factura['Monto'] || 'N/A'}</td>
+                            <td class="px-4 py-3 text-sm text-gray-900">${factura['Número de Factura'] || 'N/A'}</td>
+                            <td class="px-4 py-3 text-sm">
+                                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                                    ${factura['Categoría'] || 'Otros'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">
+                                <button onclick="ver_imagen('${factura['Ruta de Imagen']}')" class="text-blue-600 hover:text-blue-800 font-medium">
+                                    <i class="fas fa-eye mr-1"></i> Ver
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    facturasTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-2xl mb-2"></i>
+                                <p>No hay facturas cargadas aún</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error cargando facturas:', error);
+            }
+        }
+
+        /**
+         * Carga estadísticas
+         */
+        async function cargar_estadisticas() {
+            try {
+                const response = await fetch(`${API_URL}/estadisticas`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const stats = result.data;
+
+                    // Actualizar totales
+                    document.getElementById('totalFacturas').textContent = stats.totalFacturas;
+                    document.getElementById('totalMonto').textContent = 
+                        new Intl.NumberFormat('es-ES', {
+                            style: 'currency',
+                            currency: 'USD'
+                        }).format(stats.totalMonto);
+
+                    // Actualizar categorías
+                    const categoriasList = document.getElementById('categoriasList');
+                    if (Object.keys(stats.categorias).length > 0) {
+                        categoriasList.innerHTML = Object.entries(stats.categorias)
+                            .map(([cat, count]) => `
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">${cat}</span>
+                                    <span class="font-semibold text-gray-900">${count}</span>
+                                </div>
+                            `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+            }
+        }
+
+        /**
+         * Ver imagen en modal
+         */
+        function ver_imagen(imagePath) {
+            modalImage.src = imagePath;
+            modalImageLink.href = imagePath;
+            imageModal.classList.remove('hidden');
+        }
+
+        /**
+         * Cerrar modal
+         */
+        function cerrarModal() {
+            imageModal.classList.add('hidden');
+        }
+
+        /**
+         * Descargar Excel
+         */
+        function descargarExcel() {
+            window.location.href = `${API_URL}/excel`;
+        }
+
+        // ========== INICIALIZACIÓN ==========
+        // Cargar facturas y estadísticas al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            cargar_facturas();
+            cargar_estadisticas();
+            
+            // Recargar cada 30 segundos
+            setInterval(() => {
+                cargar_facturas();
+                cargar_estadisticas();
+            }, 30000);
+        });
+
+        // Cerrar modal al hacer clic fuera
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                cerrarModal();
+            }
+        });
+    </script>
+</body>
+</html>

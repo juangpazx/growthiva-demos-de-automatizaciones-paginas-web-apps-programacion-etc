@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+public/uploads/*
+!public/uploads/.gitkeep
+public/facturas.xlsx
+.DS_Store
