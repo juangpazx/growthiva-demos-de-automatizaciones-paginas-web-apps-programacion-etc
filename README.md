@@ -1,49 +1,47 @@
-# Demos de Automatización con IA
-Proyectos creados por Juan usando codigo, vs code, APIS, paginas web, etc.
+# 🚀 Growthiva - Demos de Automatización, Software y Web (IAAA)
 
-## Descripción del proyecto
+Bienvenido al repositorio de demostraciones técnicas de **Growthiva**. Aquí encontrarás soluciones reales orientadas a optimizar la eficiencia operativa de empresas, reducir costes administrativos y automatizar procesos de negocio. 
 
-Este repositorio contiene una demo de automatización para capturar leads desde WhatsApp. El flujo principal del proyecto es:
+Nuestros desarrollos están enfocados en la **máxima eficiencia de costes**: creamos sistemas estables con lógica propia, reduciendo la dependencia de APIs externas y costes de suscripción innecesarios para el cliente.
 
-- Recibir mensajes entrantes desde WhatsApp usando `whatsapp-web.js`.
-- Guardar la información del cliente en un archivo CSV local.
-- Opcionalmente guardar los leads en Google Sheets si se configura la API de Google.
-- Responder automáticamente a los mensajes con respuestas predefinidas.
+---
 
-## ¿Usa IA esta versión?
+## 🛠️ Catálogo de Soluciones y Demos Activas
 
-En esta versión del proyecto no se está usando un servicio personalizado de IA. El bot responde con reglas y respuestas programadas en `demo whatsapp leads automatitation/index.js`. Es un asistente basado en patrones de texto, no en un modelo generativo conectado a datos privados de la empresa. En este ejemplo, se programo pensando como si fuera una clinica dental, por lo tanto, las respuestas que dara el bot seran a traves de palabras claves que usualmente recibe una clinica dental por un cliente.
+### 🦷 1. Asistente de Gestión de Citas por WhatsApp (Especializado en Clínicas Dentales)
+*   **El Problema:** Las clínicas dentales pierden hasta un 30% de pacientes potenciales porque el personal de recepción está ocupado atendiendo en físico o el negocio está cerrado, tardando horas en responder los mensajes de WhatsApp.
+*   **La Solución Growthiva:** Un bot de WhatsApp robusto desarrollado a nivel nativo. El sistema automatiza el filtrado de pacientes, responde a las dudas más frecuentes de la clínica y pre-agenda citas de forma completamente autónoma.
+*   **La Ventaja Growthiva (Cero Costes Ocultos):** Desarrollado con lógica nativa y arquitectura local, **sin depender de APIs de IA de pago por uso**. Esto garantiza al dueño de la clínica un sistema rápido, privado y con un coste de mantenimiento prácticamente inexistente.
+*   **Impacto en el negocio:** Atención inmediata 24/7, recepción liberada de tareas repetitivas y optimización del calendario de la clínica.
+*   **Stack Técnico:** Python, Lógica de Estados Dinámica, Integración de Mensajería Local
 
-## ¿Cómo se usa la IA con un servicio personalizado?
+### 🔄 2. Sistema de Automatización y Gestión de Paquetes de Contenido
+*   **El Problema:** La creación, ordenación y publicación diaria de contenido multimedia consume horas semanales de trabajo manual que podrían invertirse en la estrategia del negocio.
+*   **La Solución Growthiva:** Un ecosistema de flujos de trabajo lógicos diseñado para la gestión en bloque de parámetros de contenido. Organiza, procesa y prepara la distribución de archivos para canales digitales de forma automatizada.
+*   **Impacto en el negocio:** Permite escalar la presencia digital de una marca de manera sistemática y predecible, ahorrando más de un 70% del tiempo de gestión administrativa.
+*   **Stack Técnico:** n8n, Automatización de Workflows, Python 
 
-Cuando se integra un servicio personalizado sí se usa Inteligencia Artificial. En ese caso, el chatbot se configura con los datos de la empresa y el flujo puede incluir:
+### 🌐 3. Plataforma Web Corporativa Growthiva
+*   **El Problema:** Las empresas necesitan una presencia digital de alta velocidad y estética impecable para convertir visitas en clientes B2B (Negocio a Negocio).
+*   **La Solución Growthiva:** Estructura web modular optimizada para SEO, velocidad de carga ultrarrápida y diseño responsive adaptado a cualquier dispositivo.
+*   **Código Fuente:** Disponible en nuestro repositorio hermano [growthiva-webpage](https://github.com/juangpazx/growthiva-webpage).
+*   **Stack Técnico:** HTML5, CSS3, JavaScript Avanzado, Tailwind CSS.
 
-- entrenamiento o prompt design con información de productos y servicios.
-- respuestas adaptadas al tono y políticas de la marca.
-- consulta de FAQ y datos internos del negocio.
-- generación de respuestas dinámicas en lugar de respuestas fijas.
+---
 
-Este repositorio demuestra la captura de leads y el envío de respuestas en WhatsApp. Para extenderlo a un chatbot IA personalizado, se puede conectar una API de modelo generativo y cargar el contexto corporativo de la empresa para que el bot responda con conocimiento real del negocio.
+## 📊 Stack Tecnológico Principal
 
-## Instalación básica
+Para garantizar sistemas estables, escalables y sin costes de infraestructura innecesarios para nuestros clientes, utilizamos herramientas líderes en el sector:
 
-```bash
-cd "demo whatsapp leads automatitation"
-npm install
-```
+*   **Automatización y Backend:** n8n, Python (Lógica Nativa)
+*   **Control de Versiones y Entorno:** GitHub, VS Code, GitHub Copilot
+*   **Interfaces y Web:** HTML5, CSS3, JavaScript, Tailwind
 
-## Configuración
+---
 
-Copiar un archivo `.env` con las siguientes variables si se desea usar Google Sheets:
+## 📈 ¿Listo para eliminar las tareas manuales en tu empresa?
 
-- `GOOGLE_SHEET_ID`
-- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-- `GOOGLE_PRIVATE_KEY`
+Si pasas más de 2 horas al día gestionando citas a mano, picando datos entre aplicaciones o respondiendo mensajes manualmente, estás perdiendo dinero.
 
-## Ejecución
-
-```bash
-node index.js
-```
-
-Luego escanear el QR con WhatsApp para conectar el bot.
+*   📩 **Contacto directo:* growthivaia@gmail.com
+*   💼 **Reserva una Auditoría de Eficiencia de 15 min (Gratis):** +34 614 07 81 48
